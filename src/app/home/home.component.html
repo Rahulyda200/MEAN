@@ -137,7 +137,7 @@
   </mat-form-field>
 
   <!-- Bind table to filteredUsers instead of users -->
-  <table mat-table [dataSource]="filteredUsers" matSort class="mat-elevation-z8">
+  <table mat-table [dataSource]="users" matSort class="mat-elevation-z8">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="changeSorting('name')">
         Name

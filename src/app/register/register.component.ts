@@ -52,7 +52,7 @@ export class RegisterComponent implements OnInit {
         Swal.fire({
           icon: 'success',
           title: 'Success',
-          text: 'User updated successfully!',
+          text: 'User Register successfully!',
           showConfirmButton: false,  
           timer: 1000
         }).then(() => {
@@ -70,7 +70,7 @@ export class RegisterComponent implements OnInit {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Error updating user. Please try again later!',
+          text: 'Error register user. Please try again later!',
           confirmButtonText: 'OK'
         });
         // if (confirm('enter valid input fields')) 

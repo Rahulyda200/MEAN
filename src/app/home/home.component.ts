@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
     this.userService.getUsers(page, this.limit, this.sortBy, this.sortOrder, this.filter).subscribe(
       (data) => {
         this.users = data.users;   
-        this.filteredUsers = [...this.users];
+        // this.filteredUsers = [...this.users];
         this.currentPage = data.currentPage - 1; 
         this.totalUsers = data.totalUsers; 
       },
@@ -89,7 +89,7 @@ export class HomeComponent implements OnInit {
     const inputElement = event.target as HTMLInputElement;
     this.filter = inputElement.value.trim().toLowerCase();
     
-    this.currentPage = 0; // Reset to the first page for filtered results
+    // this.currentPage = 0;  
     this.fetchUsers(1);
   }
   
