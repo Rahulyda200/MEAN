@@ -111,4 +111,8 @@ export class EditComponent implements OnInit {
       );
     }
   }
+
+  cancle(){
+    this.router.navigate(['/home'])
+  }
 }
