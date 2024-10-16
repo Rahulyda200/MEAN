@@ -1,0 +1,191 @@
+<!-- 
+
+<div class="container">
+  <h2>User List</h2>
+
+  Filter row
+  <div class="filter-row">
+    <input type="text" placeholder="Filter " (input)="applyFilter($event)">
+
+  </div>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th (click)="changeSorting('name')">
+          Name <span *ngIf="sortBy === 'name'">{{ sortOrder === 'asc' ? '<' : '>' }}</span>
+        </th>
+        <th (click)="changeSorting('email')">
+          Email <span *ngIf="sortBy === 'email'">{{ sortOrder === 'asc' ? '<' : '>' }}</span>
+        </th>
+        <th (click)="changeSorting('phone')">
+          Phone <span *ngIf="sortBy === 'phone'">{{ sortOrder === 'asc' ? '<' : '>' }}</span>
+        </th>
+        <th>Address</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let address of user.address">{{ address }}</li>
+          </ul>
+        </td>
+        <td>
+          <button class="btn1" (click)="editUser(user._id)">Edit</button>
+          <button class="btn2" (click)="deleteUser(user._id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  Pagination Controls
+  <div class="pagination">
+    <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+  <<
+    </button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+      >>
+    </button>
+  </div>
+</div>
+
+
+ -->
+
+<!-- <div class="container">
+  <h2>User List</h2> -->
+
+<!-- Filter row -->
+<!-- <div class="filter-row">
+    <input type="text" placeholder="🔍Filter" (input)="applyFilter($event)">
+  </div> -->
+<!-- <div class="example-header">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event )" placeholder="Filter">
+    </mat-form-field>
+  </div> -->
+
+<!-- <mat-form-field appearance="fill" class="filter-row">
+      <mat-label>Filter</mat-label>
+      <input matInput placeholder="" (input)="applyFilter($event)">
+    </mat-form-field> -->
+
+<!-- User Grid -->
+<!-- <div class="user-grid">
+    <div class="grid-header" (click)="changeSorting('name')">
+      Name <span *ngIf="sortBy === 'name'">{{ sortOrder === 'asc' ? '&#8593;' : '&#8595;' }}</span>  -->
+<!-- <span>&#8593;</span>   -->
+<!-- </div>
+    <div class="grid-header" (click)="changeSorting('email')">
+      Email <span *ngIf="sortBy === 'email'">{{ sortOrder === 'asc' ? '&#8593;' : '&#8595;' }}</span>
+    </div>
+    <div class="grid-header" (click)="changeSorting('phone')">
+      Phone <span *ngIf="sortBy === 'phone'">{{ sortOrder === 'asc' ? '&#8593;' : '&#8595;' }}</span>
+    </div>
+    <div class="grid-header">Address</div>
+    <div class="grid-header">Actions</div>
+
+    <div *ngFor="let user of users" class="grid-item">
+      <div>{{ user.name }}</div>
+      <div>{{ user.email }}</div>
+      <div>{{ user.phone }}</div>
+      <div>
+        <ul>
+          <li *ngFor="let address of user.address">{{ address }}</li>
+        </ul>
+      </div>
+      <div>
+        <button class="btn1" (click)="editUser(user._id)">Edit</button>
+        <button class="btn2" (click)="deleteUser(user._id)">Delete</button>
+      </div>
+    </div>
+  </div>  -->
+
+<!-- Pagination Controls -->
+<!-- <div class="pagination">
+    <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+      <<<<
+    </button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+      >>>>
+    </button>
+  </div>  -->
+<!-- 
+  <mat-paginator 
+  [length]="totalUsers" 
+  [pageSize]="limit" 
+  [pageSizeOptions]="[5, 10, 20,25,30]" 
+  (page)="changePage($event)">
+</mat-paginator>
+
+</div>  -->
+
+<div class="container">
+  <h2>User List</h2>
+
+  <!-- Filter row -->
+  <mat-form-field appearance="fill" class="filter-row">
+    <mat-label>Filter</mat-label>
+    <input matInput (input)="applyFilter($event)" />
+  </mat-form-field>
+
+  <!-- Bind table to filteredUsers instead of users -->
+  <table mat-table [dataSource]="filteredUsers" matSort class="mat-elevation-z8">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="changeSorting('name')">
+        Name
+      </th>
+      <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="changeSorting('email')">
+        Email
+      </th>
+      <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="changeSorting('phone')">
+        Phone
+      </th>
+      <td mat-cell *matCellDef="let user">{{ user.phone }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="address">
+      <th mat-header-cell *matHeaderCellDef>Address</th>
+      <td mat-cell *matCellDef="let user">
+        <ul>
+          <li *ngFor="let address of user.address">{{ address }}</li>
+        </ul>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let user">
+        <button mat-button color="primary" (click)="editUser(user._id)">Edit</button>
+        <button mat-button color="warn" (click)="deleteUser(user._id)">Delete</button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator
+    [length]="totalUsers"
+    [pageSize]="limit"
+    [pageSizeOptions]="[5, 10, 20, 25, 30]"
+    (page)="changePage($event)"
+    [pageIndex]="currentPage"
+  ></mat-paginator>
+</div>
+
