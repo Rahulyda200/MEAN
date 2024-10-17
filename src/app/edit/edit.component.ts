@@ -113,6 +113,7 @@ export class EditComponent implements OnInit {
   }
 
   cancle(){
-    this.router.navigate(['/home'])
+    this.router.navigate(['/home'], { queryParams: { page: this.route.snapshot.queryParams['page'] } });
+
   }
 }
