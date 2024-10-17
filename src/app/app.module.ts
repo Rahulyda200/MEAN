@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgModel } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegisterComponent } from './register/register.component';
@@ -18,6 +19,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     RegisterComponent,
     EditComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +42,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatCardModule,
     MatTableModule,
     MatSortModule,
-    MatDialogModule
+    MatDialogModule,
   ],
   providers: [
     UserService,

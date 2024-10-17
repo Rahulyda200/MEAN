@@ -47,19 +47,41 @@ export class HomeComponent implements OnInit {
   }
   
 
+  // fetchUsers(page: number) {
+  //   this.userService.getUsers(page, this.limit, this.sortBy, this.sortOrder, this.filter).subscribe(
+  //     (data) => {
+  //       this.users = data.users;   
+  //       // this.filteredUsers = [...this.users];
+  //       this.currentPage = data.currentPage - 1; 
+  //       this.totalUsers = data.totalUsers; 
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching users', error);
+  //     }
+  //   );
+  // }
   fetchUsers(page: number) {
     this.userService.getUsers(page, this.limit, this.sortBy, this.sortOrder, this.filter).subscribe(
       (data) => {
-        this.users = data.users;   
-        // this.filteredUsers = [...this.users];
-        this.currentPage = data.currentPage - 1; 
-        this.totalUsers = data.totalUsers; 
+        this.users = data.users;
+        this.currentPage = data.currentPage - 1;
+        this.totalUsers = data.totalUsers;
       },
       (error) => {
-        console.error('Error fetching users', error);
+        if (error.status === 401) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Unauthorized',
+            text: 'Please log in again.',
+          });
+          // Redirect to login or handle accordingly
+        } else {
+          console.error('Error fetching users', error);
+        }
       }
     );
   }
+  
 
   changePage(event: PageEvent) {
     this.currentPage = event.pageIndex; 
