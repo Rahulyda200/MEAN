@@ -1,21 +1,30 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
+import { Socket } from 'ngx-socket-io';
 
 interface User {
   name: string;
   email: string;
   phone: string;
   password: string;
+  address?: string[];
+}
+interface Message {
+  sender: string;
+  receiver: string; 
+  content: string;
+  timestamp?: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
+  
   private apiUrl = 'http://localhost:3000/api/users'; 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private socket: Socket) {}
 
   // Get the JWT token from local storage
   private getToken(): string | null {
@@ -29,33 +38,42 @@ export class UserService {
     });
   }
 
+  // API calls
+
   registerUser(user: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, user);
   }
+ 
 
-  loginUser(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, credentials);
-  }
+  
 
-  // getUsers(page: number, limit: number, sortBy: string, sortOrder: string, filter: string): Observable<any> {
-  //   const params = new HttpParams()
-  //     .set('page', page.toString())
-  //     .set('limit', limit.toString())
-  //     .set('sortBy', sortBy)
-  //     .set('sortOrder', sortOrder)
-  //     .set('filter', filter);
-
-  //   return this.http.get<any>(`${this.apiUrl}`, { params, headers: this.getAuthHeaders() });
+  // loginUser(credentials: { email: string; password: string }): Observable<any> {
+  //   return this.http.post(`${this.apiUrl}/login`, credentials);
   // }
+  loginUser(credentials: { email: string; password: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
+      tap((response: any) => {
+        // Assuming response includes token and user info
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user)); // Store user data
+      })
+    );
+  }
+  
+
   getUsers(page: number, limit: number, sortBy: string, sortOrder: string, filter: string): Observable<any> {
-    const token = localStorage.getItem('token'); // Replace with your token retrieval logic
+    const token = this.getToken();
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
 
     return this.http.get<any>(`${this.apiUrl}?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}&filter=${filter}`, { headers });
   }
-
+  getAllUsers(): Observable<any> {
+    return this.http.get(this.apiUrl, {
+      headers: this.getAuthHeaders(),
+    });
+  }
   getUserById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`, { headers: this.getAuthHeaders() });
   }
@@ -71,4 +89,84 @@ export class UserService {
   logout() {
     localStorage.removeItem('token');
   }
+
+  // Socket.IO functionality
+
+  joinRoom(roomId: string, userId: string) {
+    this.socket.emit('join', { roomId, userId });
+  }
+  // joinChatRoom(userId: string) {
+  //   this.socket.emit('login', userId); // Join user's socket room
+  // }
+
+
+  
+  //   receiveMessages(): Observable<any> {
+    //     return this.socket.fromEvent('chat message');
+    //   }
+
+    //   sendMessage(message: string, roomId: string, sender: string) {
+    //     this.socket.emit('chat message', { message, roomId, sender });
+    // }
+// sendMessage(message: string, recipientId: string, senderId: string) {
+//   this.socket.emit('chat message', { message, roomId: recipientId, sender: senderId });
+// }
+// sendMessage(message: { sender: string, receiverId: string, message: string }) {
+//   this.socket.emit('chat message', message); // Send a message
+// }
+// UserService
+sendMessage(messageData: any): Observable<void> {
+  return new Observable<void>((observer) => {
+      this.socket.emit('chat message', messageData, (response: any) => {
+          if (response.success) {
+              observer.next();
+              observer.complete();
+          } else {
+              observer.error(response.error);
+          }
+      });
+  });
+}
+
+
+
+
+// receiveMessages(): Observable<any> {
+//   return this.socket.fromEvent('chat message');
+// }
+  // Listen for events when a user disconnects
+  // onDisconnect(): Observable<any> {
+  //   return this.socket.fromEvent('disconnect');
+  // }
+  // getLoggedInUserName(): string {
+  //   const userData = JSON.parse(localStorage.getItem('user') || '{}'); // Assuming user data is stored in localStorage
+  //   return userData.name || 'Unknown User'; // Return the name or a fallback
+  // }
+  // UserService updates
+
+getLoggedInUserName(): string {
+  const userData = localStorage.getItem('user'); 
+  if (userData) {
+    const parsedData = JSON.parse(userData); 
+    return parsedData.name || 'Unknown User'; 
+  }
+  return 'Unknown User'; 
+}
+
+ receiveMessages() {
+    return this.socket.fromEvent('chat message'); // Make sure this is the same event name used in the server
+  }
+
+ 
+
+  joinChatRoom(roomId: string) {
+    this.socket.emit('login', roomId); // Make sure this event is sent correctly
+  }
+
+  onDisconnect() {
+    return this.socket.fromEvent('disconnect'); // Ensure this is used for handling disconnection
+  }
+
+
+  
 }

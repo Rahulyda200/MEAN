@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UserService } from '../user.service'; 
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { EditComponent } from '../edit/edit.component';
+import { User } from '../../user.model';
+import { ChatComponent } from '../chat/chat.component';
 import Swal from 'sweetalert2'; 
 
 @Component({
@@ -12,6 +14,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./home.component.css'] 
 })
 export class HomeComponent implements OnInit {
+
   users: any[] = [];          
   filteredUsers: any[] = [];  
   displayedColumns: string[] = ['name', 'email', 'phone', 'address', 'actions'];
@@ -21,11 +24,15 @@ export class HomeComponent implements OnInit {
   sortBy = 'name';
   sortOrder = 'asc';
   filter = '';
+  selectedUser: User | null = null;
+  // dialog: any;
 
   constructor(
     private userService: UserService, 
     private router: Router ,  
-    private route: ActivatedRoute )
+    private route: ActivatedRoute,
+    private dialog: MatDialog
+  )
      {}
   // ngOnInit() {
   //   this.route.queryParams.subscribe(params => {
@@ -114,11 +121,31 @@ export class HomeComponent implements OnInit {
     // this.currentPage = 0;  
     this.fetchUsers(1);
   }
+//   applyFilter(event: Event) {
+//     const inputElement = event.target as HTMLInputElement;
+//     this.filter = inputElement.value.trim().toLowerCase();
+    
+//     // Filter users based on input
+//     this.filteredUsers = this.users.filter(user =>
+//         user.name.toLowerCase().includes(this.filter) ||
+//         user.email.toLowerCase().includes(this.filter) ||
+//         user.phone.toLowerCase().includes(this.filter) 
+//     );
+
+//     this.currentPage = 0;  // Optionally reset page index on filter
+//     // You might not need to call fetchUsers here unless you want to refresh the entire user list
+// }
+
   
   
   editUser(userId: string) {
+    // const dialogRef = this.dialog.open(EditComponent, {
+    //   data: { user: userId },
+    //   width: '400px',
+    // });
     this.router.navigate(['/edit', userId], { queryParams: { page: this.currentPage + 1 } });
   }
+
 
   // editUser(userId: string) {
   //   this.router.navigate(['/edit', userId]);
@@ -138,7 +165,7 @@ export class HomeComponent implements OnInit {
           console.log('User deleted successfully');
           this.fetchUsers(this.currentPage + 1); 
         },
-        
+
         (error) => {
           console.error('Error deleting user', error);
         }
@@ -146,9 +173,43 @@ export class HomeComponent implements OnInit {
       
     }
   }
+  // openChat(user: User) {
+  //   this.selectedUser = user; 
+    
+ 
+  // }
 
-  openDialog(){
-
+  openChat(user: User) {
+    Swal.fire({
+      position: 'bottom-right',
+      icon: 'success',
+      title: `${user.name} has joined their room.`,
+      showConfirmButton: false,
+      timer: 1000,
+      customClass: {
+        popup: 'small-swal',
+      },
+    }).then(() => {
+      const dialogRef = this.dialog.open(ChatComponent, {
+        data: { user: user },
+        width: '800px',
+      });
+  
+      dialogRef.afterClosed().subscribe(() => {
+        console.log('Chat dialog closed');
+      });
+    });
   }
+  
+  
 
+  
+  // dialogRef.afterClosed().subscribe(() => {
+  //   // Handle any actions after the dialog is closed, if needed
+  // });
+
+
+closeChat() {
+  this.selectedUser = null; 
+}
 }
