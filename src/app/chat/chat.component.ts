@@ -85,25 +85,18 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userService.joinChatRoom(this.roomId);  
   }
   sendMessage() {
-    if (!this.messageContent.trim()) return; 
+    if (!this.messageContent.trim()) return;
   
     const messageData = {
       sender: this.sender,
       receiver: this.receiverName,
       content: this.messageContent,
-      roomId:   this.roomId 
+      roomId: this.roomId
     };
   
     console.log('Sending message:', messageData);
   
-   
-    this.messages.push({
-      sender: this.sender,
-      receiver: this.receiverName,
-      content: this.messageContent
-    });
-  
-    
+    // Send the message to the server via the userService
     this.userService.sendMessage(messageData).subscribe({
       next: () => {
         console.log('Message sent successfully');
@@ -116,6 +109,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     // Clear the message input field
     this.messageContent = '';
   }
+  
   
   
   closeChat(): void {
