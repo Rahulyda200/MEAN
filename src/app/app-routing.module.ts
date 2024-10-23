@@ -7,6 +7,8 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { HeaderComponent } from './header/header.component';
 import { AuthGuard } from './auth.guard'; // Import the AuthGuard
+import { ChatComponent } from './chat/chat.component';
+import { Chat1Component } from './chat1/chat1.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },  // Protect home route
@@ -14,6 +16,9 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },  
   { path: 'login', component: LoginComponent },
   { path: 'header', component: HeaderComponent },
+  { path: 'chat', component: ChatComponent },
+  { path: 'chat1', component: Chat1Component },
+
   { path: '', redirectTo: '/login', pathMatch: 'full' }  // Redirect to login by default
 ];
 

@@ -1,0 +1,25 @@
+  <div class="chat-header">
+    <h3>Chat with {{ receiverName }}</h3>
+    <button (click)="closeChat()" aria-label="Close Chat">Close</button>
+  </div>
+
+  <div class="chat-messages">
+    <div *ngFor="let message of messages" 
+         [ngClass]="{ 'sent-message': message.sender === sender, 'received-message': message.sender !== sender }">
+      <strong>{{ message.sender === sender ? 'You' : receiverName }}:</strong>
+      <p>{{ message.content }}</p>  
+    </div>
+  </div>
+  
+
+  <div class="chat-input">  
+    <input
+      [(ngModel)]="messageContent"
+      placeholder="Type your message..."
+      (keydown.enter)="sendMessage()"
+      aria-label="Type a message"
+    />
+    <button (click)="sendMessage()" aria-label="Send Message" [disabled]="!messageContent.trim()">
+      <span class="material-icons">send</span>
+    </button>
+  </div>
