@@ -192,7 +192,7 @@ export class HomeComponent implements OnInit {
     }).then(() => {
       const dialogRef = this.dialog.open(ChatComponent, {
         data: { user: user },
-        width: '800px',
+        width: '500px',
       });
   
       dialogRef.afterClosed().subscribe(() => {

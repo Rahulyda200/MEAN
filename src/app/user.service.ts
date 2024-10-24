@@ -23,8 +23,11 @@ interface Message {
 export class UserService {
   
   private apiUrl = 'http://localhost:3000/api/users'; 
+  private messages: Message[] = [];
 
-  constructor(private http: HttpClient, private socket: Socket) {}
+  constructor(private http: HttpClient, private socket: Socket) {
+    this.loadMessages();
+  }
 
   // Get the JWT token from local storage
   private getToken(): string | null {
@@ -165,6 +168,26 @@ getLoggedInUserName(): string {
 
   onDisconnect() {
     return this.socket.fromEvent('disconnect'); // Ensure this is used for handling disconnection
+  }
+
+ 
+
+  saveMessage(message: Message) {
+    this.messages.push(message);
+    localStorage.setItem('chatMessages', JSON.stringify(this.messages)); // Save to local storage
+  }
+
+  loadMessages() {
+    const savedMessages = localStorage.getItem('chatMessages');
+    if (savedMessages) {
+      this.messages = JSON.parse(savedMessages);
+    }
+    return this.messages;
+  }
+
+  clearMessages() {
+    this.messages = [];
+    localStorage.removeItem('chatMessages'); // Clear local storage
   }
 
 
