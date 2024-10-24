@@ -1,16 +1,26 @@
+<div class="chat-container">
   <div class="chat-header">
     <h3>Chat with {{ receiverName }}</h3>
-    <button (click)="closeChat()" aria-label="Close Chat">Close</button>
   </div>
 
   <div class="chat-messages">
-    <div *ngFor="let message of messages" 
-         [ngClass]="{ 'sent-message': message.sender === sender, 'received-message': message.sender !== sender }">
-      <strong>{{ message.sender === sender ? 'You' : receiverName }}:</strong>
-      <p>{{ message.content }}</p>  
-    </div>
-  </div>
+    <ng-container *ngFor="let message of messages; let i = index">
   
+      <div *ngIf="i === 0 || !isSameDate(messages[i].timestamp, messages[i - 1].timestamp)" class="date-divider">
+        {{ message.timestamp | date: 'EEEE' }}
+      </div>
+
+      <div [ngClass]="{ 'sent-message': message.sender === sender, 'received-message': message.sender !== sender }">
+        <strong>{{ message.sender === sender ? 'You' : receiverName }}:</strong>
+        <p>{{ message.content }}</p>
+        <!-- <small>{{ message.timestamp | date: 'short' }}</small>  -->
+        <!-- <small>{{ message.timestamp | date: 'mediumTime' }}</small>  -->
+        <small>{{ message.timestamp | date: 'hh:mm a' }}</small>
+
+
+      </div>
+    </ng-container>
+  </div>
 
   <div class="chat-input">  
     <input
@@ -23,3 +33,4 @@
       <span class="material-icons">send</span>
     </button>
   </div>
+</div>
