@@ -19,7 +19,7 @@
   font-size: 1.2em;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: self-end;
   border-bottom: 1px solid #ccc; 
 }
 
@@ -158,3 +158,17 @@
   background-color: #f1f0f0;
 }
 
+/* .chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+} */
+
+.profile-picture {
+  width: 70px;
+  height: 70px;
+  border-radius: 80%;
+  object-fit: cover;
+  margin-left: 10px;
+
+}

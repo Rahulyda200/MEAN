@@ -25,6 +25,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   roomId: string = '';
   sender: string = ''; 
   receiverName: string = '';
+  // profileImage: string = '';
+  profileImage: string | ArrayBuffer | null = null;
   private messageSubscription: Subscription = new Subscription();
 
   constructor(
@@ -68,7 +70,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         sender: msg.sender,
         content: msg.content, 
         receiver: msg.receiver || this.receiverName,
-        timestamp: msg.timestamp || new Date() // Use existing timestamp or set to now
+        timestamp: msg.timestamp || new Date() 
       }));
       
       console.log("Fetched messages:", this.messages);
@@ -121,5 +123,31 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   closeChat(): void {
     this.chatClosed.emit(); 
+  }
+
+  uploadProfilePicture(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.profileImage = e.target.result; 
+        this.sendProfileImageToServer(file); 
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  sendProfileImageToServer(file: File) {
+    const formData = new FormData();
+    formData.append('profileImage', file);
+
+    this.http.post('http://localhost:3000/api/uploadProfileImage', formData).subscribe({
+      next: (response: any) => {
+        console.log('Profile image uploaded successfully', response);
+      },
+      error: (err) => {
+        console.error('Error uploading profile image', err);
+      }
+    });
   }
 }

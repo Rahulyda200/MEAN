@@ -1,6 +1,9 @@
 <div class="chat-container">
   <div class="chat-header">
-    <h3>Chat with {{ receiverName }}</h3>
+    <img *ngIf="profileImage" [src]="profileImage" alt="Profile Picture" class="profile-picture" />
+    <h3 class="ms-3">{{ receiverName }}</h3>
+    <input type="file" (change)="uploadProfilePicture($event)" accept="image/*" />
+
   </div>
 
   <div class="chat-messages">
@@ -21,6 +24,7 @@
       </div>
     </ng-container>
   </div>
+  
 
   <div class="chat-input">  
     <input
@@ -28,9 +32,9 @@
       placeholder="Type your message..."
       (keydown.enter)="sendMessage()"
       aria-label="Type a message"
-    />
+    />  
     <button (click)="sendMessage()" aria-label="Send Message" [disabled]="!messageContent.trim()">
-      <span class="material-icons">send</span>
+      <span class="material-icons">send</span>  
     </button>
   </div>
 </div>
