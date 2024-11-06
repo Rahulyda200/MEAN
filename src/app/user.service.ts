@@ -15,6 +15,7 @@ interface Message {
   receiver: string; 
   content: string;
   timestamp?: string;
+  type: 'text' | 'image'; 
 }
 
 @Injectable({
@@ -163,18 +164,18 @@ getLoggedInUserName(): string {
  
 
   joinChatRoom(roomId: string) {
-    this.socket.emit('login', roomId); // Make sure this event is sent correctly
+    this.socket.emit('login', roomId); 
   }
 
   onDisconnect() {
-    return this.socket.fromEvent('disconnect'); // Ensure this is used for handling disconnection
+    return this.socket.fromEvent('disconnect'); 
   }
 
  
 
   saveMessage(message: Message) {
     this.messages.push(message);
-    localStorage.setItem('chatMessages', JSON.stringify(this.messages)); // Save to local storage
+    localStorage.setItem('chatMessages', JSON.stringify(this.messages)); 
   }
 
   loadMessages() {
@@ -187,7 +188,7 @@ getLoggedInUserName(): string {
 
   clearMessages() {
     this.messages = [];
-    localStorage.removeItem('chatMessages'); // Clear local storage
+    localStorage.removeItem('chatMessages'); 
   }
 
 

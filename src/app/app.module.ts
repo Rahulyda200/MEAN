@@ -25,7 +25,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
-import { Chat1Component } from './chat1/chat1.component';
+import { ImojiComponent } from './imoji/imoji.component';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+// import { EmojiMartModule } from 'emoji-mart-angular';
+
+
+
 
 
 // Socket.IO Configuration
@@ -40,17 +45,17 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     LoginComponent,
     HeaderComponent,
     ChatComponent,
-    Chat1Component,
+    ImojiComponent,
+  
     
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule, // Added HttpClientModule for API calls
-    BrowserAnimationsModule, // Import BrowserAnimationsModule
-    SocketIoModule.forRoot(config), // Import and configure Socket.IO
-    // Angular Material Modules
+    HttpClientModule, 
+    BrowserAnimationsModule, 
+    SocketIoModule.forRoot(config), 
     MatPaginatorModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -60,7 +65,10 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     MatTableModule,
     MatSortModule,
     MatDialogModule,
-    FormsModule
+    FormsModule,
+    PickerModule,
+    // EmojiMartModule
+ 
   ],
   providers: [
     UserService

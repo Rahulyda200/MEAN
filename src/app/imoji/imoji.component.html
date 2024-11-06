@@ -1,0 +1,7 @@
+<div class="emoji-input-container">
+  <button (click)="toggleEmojiPicker()" aria-label="Toggle Emoji Picker">😀</button>
+
+  <div *ngIf="showEmojiPicker" class="emoji-picker-container">
+    <emoji-mart class="emoji-mart" (emojiSelect)="addEmoji($event)" title="Pick your emoji…" set="apple"></emoji-mart>
+  </div>
+</div>
