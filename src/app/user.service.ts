@@ -15,6 +15,7 @@ interface Message {
   receiver: string; 
   content: string;
   timestamp?: string;
+  type: 'text' | 'image'; 
 }
 
 @Injectable({

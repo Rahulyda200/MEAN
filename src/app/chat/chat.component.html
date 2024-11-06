@@ -2,37 +2,63 @@
   <div class="chat-header">
     <img *ngIf="profileImage" [src]="profileImage" alt="Profile Picture" class="profile-picture" />
     <h3 class="ms-3">{{ receiverName }}</h3>
-    <input type="file" (change)="uploadProfilePicture($event)" accept="image/*" />
-
-  </div>
+    <input type="file" *ngIf="showUploadButton" (change)="uploadProfilePicture($event)" accept="image/*" />
+    <button (click)="initiateAudioCall()" aria-label="Audio Call">
+      <span class="material-icons status-icon2">phone</span>
+    </button>
+    <button (click)="initiateVideoCall()" aria-label="Video Call">
+      <span class="material-icons status-icon3">videocam</span>
+    </button>
+  </div>  
 
   <div class="chat-messages">
-    <ng-container *ngFor="let message of messages; let i = index">
-  
-      <div *ngIf="i === 0 || !isSameDate(messages[i].timestamp, messages[i - 1].timestamp)" class="date-divider">
-        {{ message.timestamp | date: 'EEEE' }}
-      </div>
+    <img *ngIf="images" [src]="images" alt="images Picture" class="images-picture" />
 
-      <div [ngClass]="{ 'sent-message': message.sender === sender, 'received-message': message.sender !== sender }">
-        <strong>{{ message.sender === sender ? 'You' : receiverName }}:</strong>
-        <p>{{ message.content }}</p>
-        <!-- <small>{{ message.timestamp | date: 'short' }}</small>  -->
-        <!-- <small>{{ message.timestamp | date: 'mediumTime' }}</small>  -->
-        <small>{{ message.timestamp | date: 'hh:mm a' }}</small>
-
-
-      </div>
-    </ng-container>
+    <!-- Existing Messages Display -->
+<ng-container *ngFor="let message of messages; let i = index">
+  <div *ngIf="i === 0 || !isSameDate(messages[i].timestamp, messages[i - 1].timestamp)" class="date-divider">
+    {{ message.timestamp | date: 'EEEE' }}
   </div>
-  
 
-  <div class="chat-input">  
-    <input
+  <div [ngClass]="{ 'sent-message': message.sender === sender, 'received-message': message.sender !== sender }">
+    <strong>{{ message.sender === sender ? 'You' : receiverName }}:</strong>
+
+    <div *ngIf="message.type === 'image'; else textMessage">
+      <img [src]="message.content" alt="Image" class="chat-image" />
+    </div>
+    <ng-template #textMessage>
+      <p>{{ message.content }}</p>
+    </ng-template>
+
+    <small>{{ message.timestamp | date: 'hh:mm a' }}</small>
+  </div>
+</ng-container>
+
+    
+  </div>
+
+  <!-- Input area with emoji, image upload, and send functionality -->
+  <div class="chat-input">
+    <app-imoji (messageUpdated)="appendEmoji($event)"></app-imoji>
+  
+    <input 
       [(ngModel)]="messageContent"
       placeholder="Type your message..."
       (keydown.enter)="sendMessage()"
       aria-label="Type a message"
     />  
+
+    <input 
+      type="file" 
+      (change)="uploadChatImage($event)" 
+      accept="image/*" 
+      style="display: none;" 
+      #chatImageInput
+    />
+    <button (click)="chatImageInput.click()" aria-label="Upload Image">
+      <span class="material-icons status-icons1">image</span>
+    </button>
+
     <button (click)="sendMessage()" aria-label="Send Message" [disabled]="!messageContent.trim()">
       <span class="material-icons">send</span>  
     </button>

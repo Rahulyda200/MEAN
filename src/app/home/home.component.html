@@ -139,7 +139,8 @@
   <!-- Bind table to filteredUsers instead of users -->
   <table mat-table [dataSource]="users" matSort class="mat-elevation-z8">
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="changeSorting('name')">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header (click) ="changeSorting('name')" >
+        
         Name
       </th>
       <td mat-cell *matCellDef="let user" (click)="openChat(user)" class="clickable-name">

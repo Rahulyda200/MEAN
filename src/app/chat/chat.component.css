@@ -11,18 +11,32 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); 
   overflow: hidden; 
 }
-
+.ms-3{
+  margin-left: 2px;
+}
 .chat-header {
   background-color: #075e54; 
   color: white;
-  padding: 16px;
+  padding: 10px;
   font-size: 1.2em;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: self-end;
+  display: flex;
+  /* justify-content: space-between; */
+  /* align-items: self-end; */
   border-bottom: 1px solid #ccc; 
 }
+.chat-header button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px; /* Add some spacing between buttons */
+}
 
+.chat-header .material-icons {
+  font-size: 24px; /* Adjust icon size */
+}
 .chat-messages {
   flex: 1;
   overflow-y: auto; 
@@ -34,7 +48,7 @@
   max-height: calc(600px - 120px); 
   background-image: url("/assets/whatsapp.png");
   /* background-image: url(../../assets/whatapp4.jpg); */
-  /* background-image: url(../../assets/whatapps3.jpg); */
+  /* background-image: url("../../assets/whatapps3.jpeg"); */
   /* background-image:url( "/home/dlu4/Test/form2/frontend/src/assets/logo1.webp"); */
   background-size: cover; 
   background-position: center;
@@ -170,5 +184,63 @@
   border-radius: 80%;
   object-fit: cover;
   margin-left: 10px;
+
+}
+.emoji-picker-container {
+  position: absolute; /* Ensure the container overlays properly */
+  bottom: 60px; /* Adjust this based on your input height */
+  left: 10px; /* Adjust as needed */
+  z-index: 1000; /* Ensure it appears above other elements */
+  width: 300px; /* Set a width for the emoji picker */
+  max-height: 400px; /* Set a maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+  border-radius: 8px; /* Rounded corners */
+  background-color: #fff; /* Background color */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+/* Style for the emoji mart component */
+.emoji-mart {
+  display: flex; /* Flexbox for layout */
+  flex-wrap: wrap; /* Allow wrapping of emojis */
+  justify-content: flex-start; /* Align to the start */
+  padding: 10px; /* Inner padding */
+}
+
+.status-icon {
+  align-items:self-end !important;
+  /* font-size: 0px;  */
+  color: blue;
+  margin-right: 8px; 
+
+}
+.status-icon1{
+  font-size: 30px;
+  color: black;
+  cursor: pointer;
+  margin: 2px;
+}
+.status-icon2{
+  color: white;
+  margin-left: 150px;
+}
+.status-icon3{
+  color: white;
+
+}
+
+.chat-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.images-picture{
+  width: 210px;
+  height: 210px;
+  object-fit: cover;
+  margin-left: 250px;
 
 }
