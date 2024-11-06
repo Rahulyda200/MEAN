@@ -1,3 +1,4 @@
+
 import {
   Component,
   OnInit,
@@ -6,6 +7,8 @@ import {
   Output,
   EventEmitter,
   OnDestroy,
+  AfterViewChecked,
+  ViewChild
 } from '@angular/core';
 import { UserService } from '../user.service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -26,9 +29,10 @@ interface Message {
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
 })
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit, OnDestroy,AfterViewChecked {
   @Input() user: any;
   @Output() chatClosed = new EventEmitter();
+  @ViewChild('chatMessages') private chatMessages: any;
   isOnline: boolean = false;
   showUploadButton = true;
   messageContent: string = '';
@@ -51,7 +55,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.sender = this.userService.getLoggedInUserName();
     this.receiverName = this.data.user.name;
 
-    this.fetchMessages();
+    // this.fetchMessages();
     this.joinRoom();
 
     this.messageSubscription = this.userService
@@ -67,6 +71,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         // status: 'delivered',
         type: message.type || 'text'  
       });
+      this.scrollToBottom();
     });
   
     this.userService.onDisconnect().subscribe(() => {
@@ -77,32 +82,34 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.messageSubscription.unsubscribe();
   }
-
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
   fetchMessages() {
-    this.http
-      .get<{ messages: Message[] }>('http://localhost:3000/api/messages')
-      .subscribe((response) => {
-        this.messages = response.messages
-          .filter(
-            (msg) =>
-              (msg.sender === this.sender &&
-                msg.receiver === this.receiverName) ||
-              (msg.sender === this.receiverName && msg.receiver === this.sender)
-          )
-          .map((msg) => ({
-            sender: msg.sender,
-            content:
-              msg.type === 'image'
-                ? `data:image/jpeg;base64,${msg.content}`
-                : msg.content,
-            receiver: msg.receiver || this.receiverName,
-            timestamp: msg.timestamp || new Date(),
-            // status: msg.status,
-            type: msg.type,
-          }));
+    // this.http
+      // .get<{ messages: Message[] }>('http://localhost:3000/api/messages')
+      // .subscribe((response) => {
+      //   this.messages = response.messages
+      //     .filter(
+      //       (msg) =>
+      //         (msg.sender === this.sender &&
+      //           msg.receiver === this.receiverName) ||
+      //         (msg.sender === this.receiverName && msg.receiver === this.sender)
+      //     )
+      //     .map((msg) => ({
+      //       sender: msg.sender,
+      //       content:
+      //         msg.type === 'image'
+      //           ? `data:image/jpeg;base64,${msg.content}`
+      //           : msg.content,
+      //       receiver: msg.receiver || this.receiverName,
+      //       timestamp: msg.timestamp || new Date(),
+      //       // status: msg.status,
+      //       type: msg.type,
+      //     }));
   
-        console.log('Fetched messages:', this.messages);
-      });
+      //   console.log('Fetched messages:', this.messages);
+      // });
   }
   
   joinRoom() {
@@ -126,11 +133,17 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userService.sendMessage(messageData).subscribe({
       next: () => {
         this.messages.push();
+        this.scrollToBottom();
       },
       error: (err) => console.error('Error sending message:', err),
     });
   
     this.messageContent = '';
+  }
+  scrollToBottom() {
+    if (this.chatMessages) {
+      this.chatMessages.nativeElement.scrollTop = this.chatMessages.nativeElement.scrollHeight;
+    }
   }
 
   isSameDate(date1: Date, date2: Date): boolean {
@@ -164,16 +177,16 @@ export class ChatComponent implements OnInit, OnDestroy {
     const formData = new FormData();
     formData.append('profileImage', file);
 
-    this.http
-      .post('http://localhost:3000/api/uploadProfileImage', formData)
-      .subscribe({
-        next: (response: any) => {
-          console.log('Profile image uploaded successfully', response);
-        },
-        error: (err) => {
-          console.error('Error uploading profile image', err);
-        },
-      });
+    // this.http
+    //   .post('http://localhost:3000/api/uploadProfileImage', formData)
+    //   .subscribe({
+    //     next: (response: any) => {
+    //       console.log('Profile image uploaded successfully', response);
+    //     },
+    //     error: (err) => {
+    //       console.error('Error uploading profile image', err);
+    //     },
+    //   });
   }
 
   showEmojiPicker: boolean = false;
@@ -199,13 +212,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.images = e.target.result; // base64 string
+        this.images = e.target.result; 
         this.sendMessageToSocket(e.target.result, 'image');
-        
       };
       reader.readAsDataURL(file);
     }
   }
+  
   
   sendMessageToSocket(content: string, type: 'text' | 'image') {
     const messageData = {
@@ -214,32 +227,34 @@ export class ChatComponent implements OnInit, OnDestroy {
       content,
       roomId: this.roomId,
       timestamp: new Date(),
-      status: 'sent',
+      status: 'sent', 
       type
     };
-    
+  
     this.userService.sendMessage(messageData).subscribe({
       next: () => {
-        this.messages.push(messageData);
+        this.messages.push(messageData); 
+        this.scrollToBottom();
       },
       error: (err) => console.error('Error sending message:', err),
     });
   }
   
   
-  sendImageMessage(file: File) {
-    const formData = new FormData();
-    formData.append('images', file);
+  
+  // sendImageMessage(file: File) {
+  //   const formData = new FormData();
+  //   formData.append('images', file);
 
-    this.http
-      .post('http://localhost:3000/api/images', formData)
-      .subscribe({
-        next: (response: any) => {
-          console.log(' image uploaded successfully', response);
-        },
-        error: (err) => {
-          console.error('Error uploading  image', err);
-        },
-      });
-  }
+  //   // this.http
+  //   //   .post('http://localhost:3000/api/images', formData)
+  //   //   .subscribe({
+  //   //     next: (response: any) => {
+  //   //       console.log(' image uploaded successfully', response);
+  //   //     },
+  //   //     error: (err) => {
+  //   //       console.error('Error uploading  image', err);
+  //   //     },
+  //   //   });
+  // }
 }

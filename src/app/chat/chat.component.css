@@ -230,12 +230,19 @@
 
 }
 
-.chat-image {
+/* .chat-image {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
   margin-top: 10px;
+} */
+.chat-image {
+  max-width: 250px;
+  height: auto;
+  border-radius: 2px;
+  margin-top: 3px;
 }
+
 
 .images-picture{
   width: 210px;
