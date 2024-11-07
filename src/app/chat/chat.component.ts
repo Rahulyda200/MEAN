@@ -14,6 +14,7 @@ import { UserService } from '../user.service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2'; 
 
 interface Message {
   sender: string;
@@ -43,6 +44,8 @@ export class ChatComponent implements OnInit, OnDestroy,AfterViewChecked {
   receiverName: string = '';
   profileImage: string | ArrayBuffer | null = null;
   images: string | ArrayBuffer | null = null;
+  selectedMessageIndex: number | null = null;
+  showDeleteIcon = false;
   private messageSubscription: Subscription = new Subscription();
 
   constructor(
@@ -257,4 +260,56 @@ export class ChatComponent implements OnInit, OnDestroy,AfterViewChecked {
   //   //     },
   //   //   });
   // }
+  onMessageDoubleClick(index: number) {
+    this.selectedMessageIndex = index;
+    this.showDeleteIcon = true;
+  }
+
+  // deleteSelectedMessage() {
+  //   if (this.selectedMessageIndex !== null) {
+  //     this.messages.splice(this.selectedMessageIndex, 1);
+  //     this.selectedMessageIndex = null;
+  //     this.showDeleteIcon = false;
+  //   }
+  // }
+  deleteSelectedMessage() {
+    if (this.selectedMessageIndex !== null) {
+      Swal.fire({
+        title: 'Delete message?',
+        text: 'Are you sure you want to delete this message? ',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        backdrop: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.messages.splice(this.selectedMessageIndex!, 1); 
+          Swal.fire({
+            title: 'Deleted!',
+            text: 'Your message has been deleted.',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          this.selectedMessageIndex = null; 
+        } else {
+          this.closeDeleteIcon();
+        }
+        this.showDeleteIcon = false;
+      });
+    } else {
+      console.error('Invalid message index selected for deletion.');
+    }
+  }
+  
+  
+  
+
+  closeDeleteIcon() {
+    this.selectedMessageIndex = null;
+    this.showDeleteIcon = false;
+  }
 }
